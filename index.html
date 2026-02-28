@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AUDITORÍA TÉCNICA PRO - VÍA GUATAPÉ</title>
+    <style>
+        :root { 
+            --primary: #0a2e50; 
+            --secondary: #b8860b; 
+            --accent: #d35400;
+            --border: #b0bec5;
+            --bg-light: #f4f7f8;
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: #e0e4e8; 
+            margin: 0; 
+            padding: 10px; 
+            font-size: 11.5px;
+            color: #263238;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        .paper-container { 
+            background: #ffffff; 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            border-top: 10px solid var(--primary);
+            border-radius: 6px;
+        }
+
+        .print-wrapper { width: 100%; border-collapse: collapse; }
+        .print-wrapper > thead { display: table-header-group; }
+        .print-wrapper > tbody { display: table-row-group; }
+        
+        .header-container {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px double var(--primary); padding-bottom: 15px; margin-bottom: 15px; gap: 10px;
+        }
+        .logo-box {
+            width: 110px; height: 75px; border: 2px dashed #90a4ae; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+            color: #78909c; font-size: 10px; text-align: center; background: var(--bg-light);
+            position: relative; overflow: hidden; flex-shrink: 0; cursor: pointer;
+        }
+        .logo-box img { max-width: 100%; max-height: 100%; display: none; object-fit: contain; }
+        
+        .header-title { text-align: center; flex-grow: 1; }
+        .header-title h1 { color: var(--primary); font-size: 17px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 1px;}
+        .header-title h2 { color: #546e7a; font-size: 12px; margin: 0 0 3px 0; }
+        .header-title p { margin: 0; font-size: 10px; font-weight: bold; color: var(--secondary); }
+
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .info-table td { border: 1px solid var(--border); padding: 8px; }
+        .info-table .bg-gray { background: var(--bg-light); font-weight: bold; color: var(--primary); width: 15%; font-size: 11px;}
+        .info-input { width: 100%; border: none; background: transparent; font-size: 12px; outline: none; font-family: inherit; -webkit-appearance: none; border-bottom: 1px dotted #ccc;}
+
+        .section-title { 
+            background: var(--primary); color: white; padding: 10px 15px; font-size: 13px; 
+            margin-top: 25px; margin-bottom: 0; border-left: 6px solid var(--secondary);
+            text-transform: uppercase; font-weight: bold; border-radius: 4px 4px 0 0;
+        }
+        .audit-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 10px; }
+        .audit-table th, .audit-table td { border: 1px solid var(--border); padding: 8px; vertical-align: top; }
+        .audit-table th { background: var(--bg-light); color: var(--primary); text-align: center; font-size: 11px; }
+        
+        .col-ficha { width: 7%; font-weight: bold; text-align: center; color: var(--accent); font-size: 10px; }
+        .col-req { width: 40%; }
+        .col-eval { width: 15%; text-align: center; }
+        .col-obs { width: 38%; }
+
+        .param-desc { font-size: 10px; color: #444; display: block; margin-top: 4px; line-height: 1.3;}
+        .tolerance { font-size: 9px; color: #d35400; font-weight: bold; display: block; margin-top: 4px; background: #fff3e0; padding: 3px; border-radius: 3px;}
+
+        .status-select { 
+            width: 100%; padding: 10px 5px; font-weight: bold; text-align: center; 
+            border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-size: 12px;
+            background-color: #fff; -webkit-appearance: none; appearance: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .status-cumple { background-color: #e8f5e9; color: #2e7d32; border-color: #2e7d32; }
+        .status-nocumple { background-color: #ffebee; color: #c62828; border-color: #c62828; }
+        .status-na { background-color: #eeeeee; color: #616161; }
+
+        textarea { 
+            width: 100%; min-height: 50px; border: 1px solid var(--border); padding: 8px; 
+            box-sizing: border-box; resize: vertical; font-family: inherit; font-size: 11px;
+            background-color: #fff; border-radius: 6px; margin-bottom: 5px; -webkit-appearance: none;
+        }
+
+        .upload-zone {
+            display: flex; align-items: center; justify-content: center; background-color: #e3f2fd; 
+            border: 2px dashed #90caf9; border-radius: 6px; padding: 10px; cursor: pointer; transition: 0.2s;
+        }
+        .upload-zone:hover { background-color: #bbdefb; }
+        .upload-zone span { color: #1565c0; font-weight: bold; font-size: 11px; text-align: center;}
+        input[type="file"] { display: none; }
+        
+        .image-gallery { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .image-gallery img { width: calc(33.333% - 4px); height: 90px; border: 1px solid #cfd8dc; border-radius: 6px; object-fit: cover; cursor: pointer; }
+
+        .app-notice { background: #fff9c4; border-left: 4px solid #f57c00; padding: 10px; font-size: 10px; margin-bottom: 15px; color: #333; }
+
+        .fab-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
+        .btn-action { 
+            padding: 12px 20px; color: white; border: none; border-radius: 50px; 
+            cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); -webkit-tap-highlight-color: transparent;
+        }
+        .btn-print { background: #2e7d32; }
+
+        .signatures { display: flex; justify-content: space-between; margin-top: 40px; padding-top: 20px; page-break-inside: avoid; }
+        .sig-box { width: 30%; text-align: center; border-top: 1px solid #000; padding-top: 8px; font-size: 11px; font-weight: bold;}
+        .sig-box input { width: 90%; text-align: center; border: none; border-bottom: 1px dotted #999; margin-top: 4px; font-size: 11px;}
+
+        @media screen and (max-width: 768px) {
+            body { padding: 5px; }
+            .paper-container { padding: 15px 10px; border-top: 6px solid var(--primary); }
+            .header-container { flex-wrap: wrap; justify-content: center; text-align: center; }
+            .logo-box { width: 80px; height: 60px; }
+            .header-title { width: 100%; order: -1; margin-bottom: 10px; }
+            .header-title h1 { font-size: 15px; }
+            .info-table, .info-table tbody, .info-table tr, .info-table td { display: block; width: 100%; box-sizing: border-box;}
+            .info-table td { border: none; padding: 4px 0; }
+            .info-table .bg-gray { background: transparent; padding-bottom: 2px; color: #555; font-size: 10px;}
+            .info-input { border-bottom: 1px solid #ccc; border-radius: 0; padding-bottom: 4px; margin-bottom: 8px; width: 100%;}
+            .print-wrapper, .print-wrapper > thead, .print-wrapper > tbody { display: block; width: 100%; }
+            .audit-table, .audit-table tbody, .audit-table tr, .audit-table td { display: block; width: 100%; box-sizing: border-box; }
+            .audit-table thead { display: none; } 
+            .audit-table tr { margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+            .audit-table td { border: none; border-bottom: 1px solid #eee; padding: 12px; }
+            .audit-table td:last-child { border-bottom: none; }
+            .audit-table td::before { content: attr(data-label); display: block; font-weight: bold; color: var(--primary); font-size: 10px; margin-bottom: 5px; text-transform: uppercase; }
+            .image-gallery img { width: calc(50% - 3px); height: 110px; }
+            .signatures { flex-direction: column; gap: 40px; align-items: center; }
+            .sig-box { width: 80%; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; font-size: 9px; }
+            .paper-container { box-shadow: none; border: none; padding: 0; max-width: 100%; width: 100%; }
+            .no-print, .upload-zone, .fab-container, .app-notice { display: none !important; }
+            .print-wrapper { display: table; }
+            .print-wrapper > thead { display: table-header-group; }
+            .print-wrapper > tbody { display: table-row-group; }
+            .audit-table { display: table; }
+            .audit-table tbody { display: table-row-group; }
+            .audit-table tr { display: table-row; margin: 0; border: none; box-shadow: none;}
+            .audit-table td, .audit-table th { display: table-cell; border: 1px solid #000; padding: 5px; }
+            .audit-table td::before { display: none; }
+            .col-ficha { width: 7%; } .col-req { width: 42%; } .col-eval { width: 13%; } .col-obs { width: 38%; }
+            textarea { border: none; background: transparent; resize: none; min-height: 25px; padding: 0; font-size: 9px;}
+            .info-input { border-bottom: 1px dotted #ccc; font-size: 10px;}
+            .status-select { border: none; background: transparent !important; color: #000 !important; font-weight: bold; padding: 0; text-align: center; font-size: 9px;}
+            .image-gallery img { border: 1px solid #000; height: 120px; width: auto; max-width: 48%; page-break-inside: avoid; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="fab-container no-print">
+    <button class="btn-action btn-print" onclick="window.print()">🖨️ Generar PDF</button>
+</div>
+
+<div class="paper-container">
+    
+    <div class="app-notice no-print">
+        💡 <b>Nota Readdle Documents:</b> Si el botón no responde, usa el menú (...) y selecciona <b>"Guardar como PDF"</b> o <b>"Compartir -> Imprimir"</b>.
+    </div>
+
+    <table class="print-wrapper">
+        <thead>
+            <tr>
+                <td>
+                    <div class="header-container">
+                        <div class="logo-box">
+                            <img id="logo1" src="">
+                            <label class="no-print" style="cursor:pointer; width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+                                <span>+ Logo Alcaldía</span>
+                                <input type="file" accept="image/*" onchange="loadLogo(this, 'logo1')">
+                            </label>
+                        </div>
+                        
+                        <div class="header-title">
+                            <h1>ACTA DE AUDITORÍA Y CONTROL CONSTRUCTIVO</h1>
+                            <h2>VÍA RURAL GRANADA - GUATAPÉ (SECTOR LA SONADORA Y LA PEÑA)</h2>
+                            <p>INSPECCIÓN TÉCNICA DETALLADA - ISC</p>
+                        </div>
+                        
+                        <div class="logo-box">
+                            <img id="logo2" src="">
+                            <label class="no-print" style="cursor:pointer; width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+                                <span>+ Logo ISC</span>
+                                <input type="file" accept="image/*" onchange="loadLogo(this, 'logo2')">
+                            </label>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr>
+                <td>
+                    <table class="info-table">
+                        <tr>
+                            <td class="bg-gray">Contratista:</td>
+                            <td><input type="text" class="info-input" placeholder="Nombre/Razón Social"></td>
+                            <td class="bg-gray">Fecha / Hora:</td>
+                            <td><input type="datetime-local" class="info-input" id="fecha-hoy"></td>
+                        </tr>
+                        <tr>
+                            <td class="bg-gray">Abscisas:</td>
+                            <td><input type="text" class="info-input" placeholder="Ej: K5+211 a K5+577"></td>
+                            <td class="bg-gray">Interventor:</td>
+                            <td><input type="text" class="info-input" placeholder="Julio Cesar Ortiz Adarve"></td>
+                        </tr>
+                    </table>
+
+                    <div class="section-title">1. PRELIMINARES</div>
+                    <table class="audit-table">
+                        <thead><tr><th class="col-ficha">ÍTEM</th><th class="col-req">REQUERIMIENTO TÉCNICO AL DETALLE</th><th class="col-eval">ESTADO</th><th class="col-obs">REGISTRO Y EVIDENCIA FOTOGRÁFICA</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">1.1</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Localización, trazado y replanteo[cite: 80].</b>
+                                    <span class="param-desc">Delimitación del área específica. [cite_start]Desmonte manual de vegetación usando motosierra para arbustos y guadaña para vegetación densa[cite: 81, 84, 85]. [cite_start]Recolección y agrupado manual con rastrillos/palas[cite: 88].</span>
+                                    [cite_start]<span class="tolerance">Uso de palas mecánicas/cargadores frontales para cargue[cite: 90]. [cite_start]Exige EPP: cascos, guantes, gafas, botas puntera[cite: 96].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval">
+                                    <select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select>
+                                </td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea placeholder="Estado del replanteo y herramientas verificadas..."></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label>
+                                    <div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="section-title">2. CONSTRUCCIÓN DE PLACA HUELLA</div>
+                    <table class="audit-table">
+                        <thead><tr><th class="col-ficha">ÍTEM</th><th class="col-req">REQUERIMIENTO TÉCNICO AL DETALLE</th><th class="col-eval">ESTADO</th><th class="col-obs">REGISTRO Y EVIDENCIA FOTOGRÁFICA</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.1</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Excavación en material común de explanación, canales y préstamos[cite: 100].</b>
+                                    <span class="param-desc">Incluye cargue y disposición final. [cite_start]Uso de retroexcavadora (oruga/llanta) y bulldozer (140-160 HP)[cite: 100, 102, 109, 111]. [cite_start]Motoniveladora para afinar superficie[cite: 112]. [cite_start]Compactador rodillo para asegurar base firme[cite: 113].</span>
+                                    [cite_start]<span class="tolerance">NOTA: No incluye transporte en este ítem de pago[cite: 100].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.2</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Excavación manual en material común[cite: 122].</b>
+                                    [cite_start]<span class="param-desc">Remoción en suelo blando/semi-compacto en zonas de difícil acceso usando palas, picos y barretas[cite: 125].</span>
+                                    [cite_start]<span class="tolerance">Incluye recolección, cargue en carretillas/costales, transporte y disposición[cite: 122, 126].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.3</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Conformación de la calzada existente[cite: 129].</b>
+                                    <span class="param-desc">Distribución y perfilado con bulldozer. [cite_start]Compactación con rodillo (liso, pata de cabra o vibratorio)[cite: 131, 132].</span>
+                                    [cite_start]<span class="tolerance">Obligatorio: Limpieza y reconstrucción de cunetas laterales[cite: 133].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.4</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Lleno para terraplenes compactado mecánicamente[cite: 135].</b>
+                                    <span class="param-desc">Conformación por capas. Verificación in situ de densidades.</span>
+                                    [cite_start]<span class="tolerance">Exigencia mínima: Densidad 95% del ensayo Proctor modificado[cite: 135]. [cite_start]No incluye transporte[cite: 136].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea placeholder="Referenciar ensayos de densidad..."></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.5</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Subbase granular (Suministro y conformación)[cite: 141].</b>
+                                    <span class="param-desc">No incluye transporte. [cite_start]Se exige control de polvo y manejo de aguas[cite: 141, 148].</span>
+                                    [cite_start]<span class="tolerance">Exigencia mínima: Compactación hasta obtener 95% del ensayo Proctor modificado[cite: 142].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.6</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Concreto Clase D (21 MPa) - Placa huella[cite: 149].</b>
+                                    <span class="param-desc">Incluye formaleta en madera. Colocación de material granular (recebo/grava) de fondo. Uso de vibradores. [cite_start]Acabado escobillado antideslizante[cite: 149, 153, 154, 156, 157].</span>
+                                    [cite_start]<span class="tolerance">Curado obligatorio continuo por 7 días (agua, mantas, químico)[cite: 158].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea placeholder="Slump, cilindros tomados, curado..."></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.7</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Concreto Clase G (Ciclópeo) - Franja central[cite: 159].</b>
+                                    [cite_start]<span class="param-desc">Mezcla de concreto clase F (14 MPa) con piedra[cite: 159, 162]. [cite_start]Compactación con herramienta manual/vibradores de aguja[cite: 164]. [cite_start]Curado 7 días[cite: 166].</span>
+                                    <span class="tolerance">Tamaño de piedra de 2" a 4". [cite_start]Proporción de piedra no mayor al 40%[cite: 159].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.8</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Acero de refuerzo fy=420 Mpa (Grado 60)[cite: 167].</b>
+                                    <span class="param-desc">Acero libre de contacto con humedad o lodo. [cite_start]Amarres con alambre negro/grapas[cite: 167, 170].</span>
+                                    [cite_start]<span class="tolerance">Apoyo OBLIGATORIO sobre calzas plásticas o de mortero (recubrimiento min. 5 cm)[cite: 169].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.9</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Transporte de materiales (afirmado, subbase, base, asfáltica)[cite: 174].</b>
+                                    [cite_start]<span class="param-desc">Distancias > 1000m medidos a partir de 100m[cite: 174]. Control de humedad en cargue en volquetas. [cite_start]Seguimiento con planillas y hojas de cubicación[cite: 178, 181].</span>
+                                    [cite_start]<span class="tolerance">Cálculo en material compacto INCLUYE 30% de expansión[cite: 175].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">2.10</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Transporte de sobrantes de excavación, canales, préstamos[cite: 182].</b>
+                                    <span class="param-desc">Distancias > 1000m medidos a partir de 100m. [cite_start]Cargue mediante retroexcavadora cuidando capacidad máxima[cite: 182, 185, 186].</span>
+                                    <span class="tolerance">Disposición final autorizada. [cite_start]INCLUYE 30% de expansión[cite: 183, 187].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="section-title">3. CONSTRUCCIÓN CUNETAS</div>
+                    <table class="audit-table">
+                        <thead><tr><th class="col-ficha">ÍTEM</th><th class="col-req">REQUERIMIENTO TÉCNICO AL DETALLE</th><th class="col-eval">ESTADO</th><th class="col-obs">REGISTRO Y EVIDENCIA FOTOGRÁFICA</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">3.1</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Excavación manual en material común[cite: 189].</b>
+                                    <span class="param-desc">Uso de picas, palas y azadones. Incluye cargue, transporte y disposición final. [cite_start]Alisado y perfilado de superficie para recibir concreto[cite: 189, 192, 195].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">3.2</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Descapote a máquina del terreno natural[cite: 196].</b>
+                                    [cite_start]<span class="param-desc">Retiro de capa vegetal hasta 30 cm con retro/motoniveladora[cite: 196, 198]. [cite_start]Apilamiento ordenado en taludes sin invadir zonas protegidas[cite: 199].</span>
+                                    [cite_start]<span class="tolerance">Incluye disposición final, NO incluye transporte fuera del sitio[cite: 196, 200].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">3.3</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Concreto Clase D (21 MPa) - Cunetas[cite: 201].</b>
+                                    <span class="param-desc">Instalación de formaleta y validación de compactación de base. Vibrado con aguja. Alisado con regla/llana. [cite_start]Aplicación de junta de dilatación[cite: 201, 202, 204, 205, 206].</span>
+                                    [cite_start]<span class="tolerance">Curado mínimo 7 días (agua/químico)[cite: 207].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">3.4</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Acero de refuerzo fy=420 Mpa (Grado 60)[cite: 208].</b>
+                                    <span class="param-desc">Suministro, transporte e instalación sobre calzas. [cite_start]Amarres firmes[cite: 208, 209, 210].</span>
+                                    [cite_start]<span class="tolerance">Acero estrictamente libre de óxido, pintura o grasa[cite: 211].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">3.5</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Transporte de sobrantes de excavación, canales[cite: 213].</b>
+                                    <span class="param-desc">Transporte en volquetas a sitio de disposición. [cite_start]Control con planillas y cubicaciones[cite: 216, 217].</span>
+                                    <span class="tolerance">Distancia >1000m (medidos desde 100m). [cite_start]Incluye 30% expansión de volumen suelto[cite: 213, 215].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="section-title">4. OBRAS DE DRENAJE</div>
+                    <table class="audit-table">
+                        <thead><tr><th class="col-ficha">ÍTEM</th><th class="col-req">REQUERIMIENTO TÉCNICO AL DETALLE</th><th class="col-eval">ESTADO</th><th class="col-obs">REGISTRO Y EVIDENCIA FOTOGRÁFICA</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.1</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Excavación en material común (explanación, canales, préstamos)[cite: 219].</b>
+                                    <span class="param-desc">Corte con retroexcavadora, perfilado manual de fondo/taludes. [cite_start]Cargue y disposición final de sobrante[cite: 221, 222, 223].</span>
+                                    [cite_start]<span class="tolerance">No incluye transporte a largas distancias[cite: 224].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.2</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Concreto Clase F (14 MPa) - Solados[cite: 225].</b>
+                                    <span class="param-desc">Base compactada, uso de formaleta lateral. [cite_start]Distribución, alisado y vibración ligera[cite: 225, 226, 227].</span>
+                                    <span class="tolerance">Espesor estricto: E=0.05m (5 cm). Curado mín. [cite_start]7 días[cite: 225, 228].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.3</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Concreto Clase D (21 MPa) para Muros, disipadores, aletas, estribos[cite: 229].</b>
+                                    <span class="param-desc">Construcción de zapata. [cite_start]Formaleta alienada (metálica/madera tratada) con desmoldante para acabado a la vista[cite: 231, 232, 233]. [cite_start]Curado 7 días[cite: 235].</span>
+                                    [cite_start]<span class="tolerance">Obligatorio: Mezcla incluye aditivo impermeabilizante[cite: 230, 234].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.4</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Acero de refuerzo fy=420 Mpa (Grado 60)[cite: 237].</b>
+                                    <span class="param-desc">Certificados de calidad. Armado de mallados/estribos sobre calzas. [cite_start]Inspección previa al vaciado[cite: 237, 239, 241].</span>
+                                    [cite_start]<span class="tolerance">Corte y doblez estricto según diseño estructural[cite: 238].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.5</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Tubería PVC 36" para alcantarillado[cite: 242].</b>
+                                    <span class="param-desc">Conformación de cama de apoyo compactada. Sistema campana-espiga con lubricante y anillos caucho. [cite_start]Relleno lateral/superior[cite: 242].</span>
+                                    <span class="tolerance">Verificar cotas/pendientes. [cite_start]Pruebas de estanqueidad si lo pide diseño[cite: 242].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.6</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Transporte de sobrantes de excavación/canales (>1000m)[cite: 243].</b>
+                                    <span class="param-desc">Material compacto. [cite_start]Cargue y disposición final[cite: 245, 246].</span>
+                                    <span class="tolerance">Medido a partir de 100m. [cite_start]Incluye 30% expansión natural[cite: 243, 244].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.7</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Excavación manual en material común[cite: 248].</b>
+                                    <span class="param-desc">Zonas de difícil acceso (cámaras, conexiones). Herramientas manuales. [cite_start]Transporte interno en carretillas y disposición[cite: 249, 250, 251, 252].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">4.8</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Lleno manual compactado (material de excavación)[cite: 253].</b>
+                                    <span class="param-desc">Selección/acarreo (sin orgánicos/piedras). Extendido en capas de 20-30 cm. [cite_start]Compactación con pisón/placa vibratoria/canguro[cite: 254, 255].</span>
+                                    [cite_start]<span class="tolerance">Densidad mínima: 95% ensayo Proctor modificado verificado in situ[cite: 253, 256].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="section-title">5. OBRAS ADICIONALES</div>
+                    <table class="audit-table">
+                        <thead><tr><th class="col-ficha">ÍTEM</th><th class="col-req">REQUERIMIENTO TÉCNICO AL DETALLE</th><th class="col-eval">ESTADO</th><th class="col-obs">REGISTRO Y EVIDENCIA FOTOGRÁFICA</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">5.1</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Demolición de estructuras (Concreto reforzado)[cite: 257].</b>
+                                    <span class="param-desc">Señalización/barreras. Uso de retro/martillo neumático protegiendo infraestructura cercana. [cite_start]Separación y acopio temporal[cite: 260, 261, 262, 263].</span>
+                                    <span class="tolerance">Incluye cargue y disposición. [cite_start]No incluye transporte[cite: 258].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">5.2</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Transporte de sobrantes de demoliciones (>1000m)[cite: 266].</b>
+                                    <span class="param-desc">Cargue en volquetas (sin mezclar). [cite_start]Disposición en sitio aprobado[cite: 266, 268, 269].</span>
+                                    [cite_start]<span class="tolerance">Medido suelto, aplicando expansión natural 30%[cite: 266, 267].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">5.3</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Señal Vertical de Transito Tipo SP y/o SR[cite: 271].</b>
+                                    [cite_start]<span class="param-desc">Lámina reflectiva 60x60[cite: 271]. Instalación en postes metálicos.</span>
+                                    [cite_start]<span class="tolerance">Cimentación estricta en concreto según norma vial[cite: 275, 276].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td data-label="Ítem:" class="col-ficha">5.4</td>
+                                <td data-label="Requisito:" class="col-req">
+                                    [cite_start]<b>Señal vertical SP 75 Delineador de curva[cite: 277].</b>
+                                    <span class="param-desc">Instalación en sitio exacto según plano. [cite_start]Cuidado en transporte y alineación[cite: 278, 279].</span>
+                                    [cite_start]<span class="tolerance">Incluye fijación en ángulo de 2x1/4" y empotramiento en concreto de 2000 psi[cite: 278].</span>
+                                </td>
+                                <td data-label="Estado:" class="col-eval"><select class="status-select" onchange="changeColor(this)"><option value="">--</option><option value="cumple">CUMPLE</option><option value="nocumple">NO CUMPLE</option><option value="na">N/A</option></select></td>
+                                <td data-label="Evidencias:" class="col-obs">
+                                    <textarea></textarea>
+                                    <label class="upload-zone no-print"><span>📸 Adjuntar Evidencias</span><input type="file" multiple accept="image/*" onchange="handleFiles(this)"></label><div class="image-gallery"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="signatures">
+                        <div class="sig-box">
+                            <br><br><br>
+                            Ingeniero Interventor<br>
+                            <input type="text" placeholder="Firma / Nombre"><br>
+                            <input type="text" placeholder="M.P. No.">
+                        </div>
+                        <div class="sig-box">
+                            <br><br><br>
+                            Residente Contratista<br>
+                            <input type="text" placeholder="Firma / Nombre"><br>
+                            <input type="text" placeholder="Cédula">
+                        </div>
+                        <div class="sig-box">
+                            <br><br><br>
+                            V.B. Supervisión<br>
+                            <input type="text" value="Alcaldía Guatapé"><br>
+                            <input type="text" placeholder="Cargo">
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Fecha actual
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('fecha-hoy').value = now.toISOString().slice(0,16);
+
+    // Carga de Logos
+    function loadLogo(input, imgId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById(imgId);
+                img.src = e.target.result;
+                img.style.display = 'block';
+                input.parentElement.style.display = 'none'; 
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Galería por ítem (Totalmente individual para cada fila)
+    function handleFiles(input) {
+        const gallery = input.closest('.col-obs').querySelector('.image-gallery');
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.title = "Tocar para eliminar";
+                    img.onclick = function() {
+                        if(confirm("¿Eliminar esta fotografía de la evidencia?")) this.remove();
+                    };
+                    gallery.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        }
+        input.value = ""; 
+    }
+
+    // Cambio dinámico Semáforo
+    function changeColor(selectElement) {
+        selectElement.classList.remove('status-cumple', 'status-nocumple', 'status-na');
+        if (selectElement.value === 'cumple') selectElement.classList.add('status-cumple');
+        else if (selectElement.value === 'nocumple') selectElement.classList.add('status-nocumple');
+        else if (selectElement.value === 'na') selectElement.classList.add('status-na');
+    }
+</script>
+
+</body>
+</html>
